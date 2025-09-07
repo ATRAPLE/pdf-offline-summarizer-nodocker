@@ -3,7 +3,6 @@ uvicorn[standard]
 pydantic
 python-multipart
 pypdf
-pdfplumber
 ocrmypdf
 Pillow
 chromadb
