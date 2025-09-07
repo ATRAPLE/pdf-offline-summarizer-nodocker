@@ -1,0 +1,33 @@
+@"
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtualenv
+.venv/
+.venv*/
+.venv312/
+
+# IDE/OS
+.vscode/
+.idea/
+.DS_Store
+
+# Ambiente e segredos
+.env
+.env.*
+!.env.sample
+
+# Dados e artefatos locais
+data/
+.chroma/
+
+# Logs
+*.log
+"@ | Out-File -Encoding UTF8 .gitignore
