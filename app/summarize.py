@@ -10,8 +10,11 @@ def _chat(model: str, messages: list, temperature: float = 0.1, max_retries: int
     '''
     Chama o endpoint correto do Ollama (/api/chat ou /api/generate) conforme o modelo.
     '''
-    # Detecta se o modelo suporta /api/chat (modelos maiores geralmente suportam)
-    use_chat = not ("0.5b" in model or "3b" in model)
+    # Lista de modelos conhecidos que suportam /api/chat
+    chat_models = [
+        "llama2", "llama3", "qwen2.5:7b-instruct", "qwen2.5:14b", "mistral", "gemma", "phi3", "dolphin", "codellama"
+    ]
+    use_chat = any(m in model for m in chat_models)
     for attempt in range(1, max_retries+1):
         try:
             if use_chat:
@@ -25,13 +28,16 @@ def _chat(model: str, messages: list, temperature: float = 0.1, max_retries: int
                     "stream": False
                 }
                 r = requests.post(url, json=payload, timeout=120)
-                r.raise_for_status()
-                data = r.json()
-                return data.get("message", {}).get("content", "")
-            else:
-                # Para modelos pequenos, usa /api/generate
+                if r.status_code == 404:
+                    # Fallback para /api/generate se /api/chat não existir
+                    use_chat = False
+                else:
+                    r.raise_for_status()
+                    data = r.json()
+                    return data.get("message", {}).get("content", "")
+            if not use_chat:
+                # Para modelos pequenos ou fallback, usa /api/generate
                 url = f"{OLLAMA_HOST}/api/generate"
-                # Concatena todas as mensagens em um único prompt
                 prompt = "\n\n".join([m["content"] for m in messages])
                 payload = {
                     "model": model,
@@ -45,7 +51,7 @@ def _chat(model: str, messages: list, temperature: float = 0.1, max_retries: int
                 r.raise_for_status()
                 data = r.json()
                 return data.get("response", "")
-        except Exception:
+        except Exception as e:
             if attempt == max_retries:
                 raise
             time.sleep(1.5 * attempt)
