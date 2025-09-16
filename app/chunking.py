@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-def chunk_text(text: str, chunk_size: int = 4000, overlap: int = 400) -> List[Tuple[str, int]]:
+def chunk_text(text: str, chunk_size: int = 450000, overlap: int = 400) -> List[Tuple[str, int]]:
     if chunk_size <= 0:
         chunk_size = 450000
     if overlap < 0:
