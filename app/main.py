@@ -45,7 +45,7 @@ def health():
 def summarize_pdf(
     file: UploadFile = File(...),
     model: str = Form(DEFAULT_MODEL),
-    chunk_chars: int = Form(4000),
+    chunk_chars: int = Form(450000),
     overlap: int = Form(400),
     language: str = Form("pt-BR"),
     map_prompt: str = Form("Resuma objetivamente (bullet points, PT-BR) o trecho a seguir, preservando números, entidades e termos técnicos:"),
