@@ -4,7 +4,7 @@ def chunk_text(text: str, chunk_size: int = 450000, overlap: int = 400) -> List[
     if chunk_size <= 0:
         chunk_size = 450000
     if overlap < 0:
-        overlap = 0
+        overlap = 400
     chunks = []
     i = 0
     n = len(text)
